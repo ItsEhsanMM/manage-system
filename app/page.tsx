@@ -1,9 +1,13 @@
-import { Login } from '@/components/auth/Login'
+import { auth, signOut } from '@/auth'
+import { redirect } from 'next/navigation'
 
-export default async function Home() {
-  return (
-    <div className='grid h-dvh w-full items-center justify-center'>
-      <Login />
-    </div>
-  )
+const page = async () => {
+  //   if (!user) {
+  //       redirect('/auth/signin')
+  //     } else {
+  //       redirect('/dashboard')
+  //   }
+
+  return <div>test</div>
 }
+export default page

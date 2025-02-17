@@ -51,6 +51,8 @@ export const login = createServerAction()
       console.log(error)
       process.exit(1)
     }
+
+    redirect("/dashboard")
   })
 
 export const register = createServerAction()
@@ -71,11 +73,11 @@ export const register = createServerAction()
         name,
         email,
         password: await hash(password, 12)
-      }).then(() => {
-        return redirect('/')
       })
+      
     } catch (error) {
       console.log(error)
       process.exit(1)
     }
+    redirect('/auth/login')
   })
