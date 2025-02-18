@@ -13,7 +13,7 @@ export default function Sidebar() {
     <>
       {/* Sidebar */}
       <aside
-        className={`fixed z-40 h-screen w-64 transform bg-[#f9f9f9] p-4 shadow-lg transition-transform duration-300 ease-in-out md:relative ${
+        className={`fixed z-40 h-dvh w-64 transform bg-[#f9f9f9] p-4 shadow-lg transition-transform duration-300 ease-in-out md:relative ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         } md:translate-x-0`}
       >
@@ -29,14 +29,14 @@ export default function Sidebar() {
         <nav className='flex h-full flex-col justify-between'>
           <div className='mt-8 space-y-4'>
             <Link
-              href='/users'
+              href='/dashboard/clients'
               className='flex items-center space-x-2 rounded-lg p-2 transition-colors duration-200 hover:bg-blue-600'
             >
               <PersonIcon className='h-5 w-5' />
               <span>کاربران</span>
             </Link>
             <Link
-              href='/reports'
+              href='/dashboard/reports'
               className='flex items-center space-x-2 rounded-lg p-2 transition-colors duration-200 hover:bg-blue-600'
             >
               <FileTextIcon className='h-5 w-5' />
