@@ -1,7 +1,7 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
-
+import { date } from 'zod'
 export type Client = {
   name: string
   email: string
@@ -24,12 +24,19 @@ export const clientColumns: ColumnDef<Client>[] = [
   {
     accessorKey: 'salary',
     header: 'حقوق',
-    size: 100
+    size: 100,
+    cell: ({ row }) => {
+      const salary = row.original.salary.toLocaleString()
+      return <p>{salary}</p>
+    }
   },
   {
     accessorKey: 'status',
     header: 'وضعیت',
-    size: 150
+    size: 150,
+    cell: ({ row }) => {
+      return <p>{row.getValue('status') === 'hired' ? 'استخدام' : 'اخراج'}</p>
+    }
   },
   {
     accessorKey: 'joinDate',
@@ -37,8 +44,18 @@ export const clientColumns: ColumnDef<Client>[] = [
     size: 150,
     cell: ({ row }) => {
       const date = new Date(row.getValue('joinDate'))
-      const formatted = date.toLocaleDateString()
-      return <div className='font-medium'>{formatted}</div>
+      const formatter = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+        numberingSystem: 'latn' // Use Latin numerals (English numbers)
+      })
+
+      const formattedDate = formatter.format(date).replace(/‎/g, '')
+      return <div className='font-medium'>{formattedDate}</div>
     }
   }
 ]
