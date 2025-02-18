@@ -1,7 +1,12 @@
 'use client'
 
 import Link from 'next/link'
-import { PersonIcon, FileTextIcon, Cross2Icon } from '@radix-ui/react-icons'
+import {
+  PersonIcon,
+  FileTextIcon,
+  Cross2Icon,
+  DashboardIcon
+} from '@radix-ui/react-icons'
 import { useSidebarStore } from '@/stores/sidebarStore'
 import { Button } from './ui/button'
 import { signOut } from 'next-auth/react'
@@ -28,6 +33,13 @@ export default function Sidebar() {
         {/* Sidebar Links */}
         <nav className='flex h-full flex-col justify-between'>
           <div className='mt-8 space-y-4'>
+            <Link
+              href='/dashboard'
+              className='flex items-center space-x-2 rounded-lg p-2 transition-colors duration-200 hover:bg-blue-600'
+            >
+              <DashboardIcon className='h-5 w-5' />
+              <span>داشبورد</span>
+            </Link>
             <Link
               href='/dashboard/clients'
               className='flex items-center space-x-2 rounded-lg p-2 transition-colors duration-200 hover:bg-blue-600'

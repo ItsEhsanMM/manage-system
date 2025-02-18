@@ -1,4 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { Card, CardContent, CardHeader } from '../ui/card'
+import '@/styles/statbox.css'
 
 interface Props {
   content: string
@@ -7,12 +8,15 @@ interface Props {
 
 const StatBox = ({ content, info }: Props) => {
   return (
-    <Card className='flex h-40 max-w-[30%] flex-col items-center'>
-      <CardHeader className='size-full text-center text-2xl'>
-        <CardTitle>{content}:</CardTitle>
+    <Card className='card'>
+      <CardHeader className='title'>
+        <p className='title-text text-2xl'>{content}</p>
       </CardHeader>
-      <CardContent className='flex size-full items-center justify-center text-3xl'>
-        <span className=''>{info}</span>
+      <CardContent className='data'>
+        <p>{info}</p>
+        <div className='range'>
+          <div className={`fill w-full`}></div>
+        </div>
       </CardContent>
     </Card>
   )
