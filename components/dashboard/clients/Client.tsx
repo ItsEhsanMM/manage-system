@@ -1,15 +1,20 @@
 'use client'
 
 import { useForm } from 'react-hook-form'
-import { Button } from '../ui/button'
+import { z } from 'zod'
+import { clientSchema } from '@/Schema/client'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useServerActionMutation } from '@/lib/hooks/server-action-hooks'
+import { createClient } from '@/actions/Client'
+import { useEffect, useState } from 'react'
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger
-} from '../ui/dialog'
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -17,15 +22,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage
-} from '../ui/form'
-import { z } from 'zod'
-import { clientSchema } from '@/Schema/client'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Input } from '../ui/input'
-import NumberInput from '../ui/NumberInput'
-import { useServerActionMutation } from '@/lib/hooks/server-action-hooks'
-import { createClient } from '@/actions/Client'
-import { useEffect, useState } from 'react'
+} from '@/components/ui/form'
+import NumberInput from '@/components/ui/NumberInput'
+import { Input } from '@/components/ui/input'
 
 const Client = () => {
   const { mutate, isPending, isSuccess, reset } =
