@@ -93,7 +93,7 @@ export function Login() {
             </Button>
             <CardDescription>
               آیا حساب ندارید؟{' '}
-              <Link className='text-blue-500 underline' href='/register'>
+              <Link className='text-blue-500 underline' href='/auth/register'>
                 ساختن حساب
               </Link>
             </CardDescription>

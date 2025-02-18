@@ -109,7 +109,7 @@ const Register = () => {
             </Button>
             <CardDescription>
               آیا حساب دارید؟
-              <Link className='text-blue-500 underline' href='/'>
+              <Link className='text-blue-500 underline' href='/auth/login'>
                 ورود به حساب
               </Link>
             </CardDescription>

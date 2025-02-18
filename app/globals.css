@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+#sidebar-toggle:checked ~ aside {
+  transform: translateX(0);
+}
+
+#sidebar-toggle:checked ~ #sidebar-overlay {
+  display: block;
+}
 
 @layer base {
   :root {
