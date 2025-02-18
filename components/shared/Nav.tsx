@@ -6,12 +6,12 @@ export default function Navbar({ name }: { name: string }) {
   const toggleSidebar = useSidebarStore(state => state.toggleSidebar)
 
   return (
-    <nav className='flex items-center justify-between bg-blue-600 p-4 text-white shadow-md'>
+    <nav className='flex items-center justify-between border-b-2 p-4'>
       <div className='flex items-center space-x-4'>
         {/* Hamburger Menu Button (Mobile and Tablet Only) */}
         <button
           onClick={toggleSidebar}
-          className='cursor-pointer rounded-lg p-2 transition-colors duration-200 hover:bg-blue-500 md:hidden'
+          className='cursor-pointer rounded-lg p-2 transition-colors duration-200 hover:bg-gray-300 md:hidden'
         >
           ☰
         </button>

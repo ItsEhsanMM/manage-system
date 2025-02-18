@@ -13,14 +13,14 @@ export default function Sidebar() {
     <>
       {/* Sidebar */}
       <aside
-        className={`fixed z-40 h-screen w-64 transform bg-blue-700 p-4 text-white shadow-lg transition-transform duration-300 ease-in-out md:relative ${
+        className={`fixed z-40 h-screen w-64 transform bg-[#f9f9f9] p-4 shadow-lg transition-transform duration-300 ease-in-out md:relative ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         } md:translate-x-0`}
       >
         {/* Close Button (Mobile and Tablet Only) */}
         <button
           onClick={closeSidebar}
-          className='absolute right-2 top-2 rounded-lg p-2 transition-colors duration-200 hover:bg-blue-600 md:hidden'
+          className='absolute right-2 top-2 rounded-lg p-2 transition-colors duration-200 hover:bg-gray-400 md:hidden'
         >
           <Cross2Icon className='h-5 w-5' />
         </button>
@@ -45,8 +45,7 @@ export default function Sidebar() {
           </div>
 
           <Button
-            variant='ghost'
-            className='text-white transition-colors duration-200 hover:bg-blue-500'
+            className='transition-colors duration-200 hover:bg-blue-500'
             onClick={() => signOut()}
           >
             خروج
