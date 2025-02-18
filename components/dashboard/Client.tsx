@@ -23,8 +23,14 @@ import { clientSchema } from '@/Schema/client'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Input } from '../ui/input'
 import NumberInput from '../ui/NumberInput'
+import { useServerActionMutation } from '@/lib/hooks/server-action-hooks'
+import { createClient } from '@/actions/Client'
+import { useEffect, useState } from 'react'
 
 const Client = () => {
+  const { mutate, isPending, isSuccess, reset } =
+    useServerActionMutation(createClient)
+  const [open, setOpen] = useState(false)
   const form = useForm<z.infer<typeof clientSchema>>({
     resolver: zodResolver(clientSchema),
     defaultValues: {
@@ -34,12 +40,20 @@ const Client = () => {
     }
   })
 
+  useEffect(() => {
+    if (isSuccess) {
+      setOpen(false) // Close the dialog
+      form.reset() // Reset the form
+      reset() // Reset the mutation state
+    }
+  }, [isSuccess, form, reset])
+
   function onSubmit(values: z.infer<typeof clientSchema>) {
-    console.log(values)
+    mutate(values)
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>اضافه کردن</Button>
       </DialogTrigger>
@@ -94,15 +108,19 @@ const Client = () => {
                   </FormLabel>
                   <FormControl>
                     <NumberInput
+                      {...field}
+                      onChange={prev => field.onChange(prev)}
+                      type='number'
                       className='border-black'
                       min='0'
-                      {...field}
                     ></NumberInput>
                   </FormControl>
                 </FormItem>
               )}
             />
-            <Button type='submit'>ثبت</Button>
+            <Button disabled={isPending} type='submit'>
+              ثبت
+            </Button>
           </form>
         </Form>
       </DialogContent>

@@ -1,71 +1,59 @@
 'use client' // Required for client-side interactivity
 
 import { Input } from '@/components/ui/input'
-import React, { useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 import { twMerge } from 'tailwind-merge'
 
-const NumberInput = React.forwardRef<
-  HTMLInputElement,
-  React.ComponentProps<'input'>
->(({ className, type, ...props }, ref) => {
-  const inputRef = useRef<HTMLInputElement>(null)
+// Define the props interface, extending the input props but overriding onChange
+interface NumberInputProps
+  extends Omit<React.ComponentProps<'input'>, 'onChange' | 'value'> {
+  onChange?: (value: number) => void // Custom onChange that returns a number
+  value?: number // Controlled value prop
+}
 
-  useEffect(() => {
-    const handleInput = (event: Event) => {
-      const target = event.target as HTMLInputElement
-      let value = target.value
+const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
+  ({ className, onChange, value, ...props }, ref) => {
+    // State to manage the input value
+    const [inputValue, setInputValue] = useState<string>(
+      value?.toString() || ''
+    )
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value
 
       // Remove leading zeros
-      if (/^0+/.test(value)) {
-        value = value.replace(/^0+/, '')
-      }
+      const sanitizedValue = value.replace(/^0+/, '') || '0'
 
-      // Ensure the value is greater than 0
-      if (Number(value) <= 0) {
-        value = ''
-      }
+      // Convert the sanitized value to a number
+      const numericValue = parseFloat(sanitizedValue)
 
-      // Update the input value
-      target.value = value
-    }
+      // Update the input value state
+      setInputValue(sanitizedValue)
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      // Prevent non-numeric characters
-      if (
-        event.key === 'e' ||
-        event.key === 'E' ||
-        event.key === '+' ||
-        event.key === '-'
-      ) {
-        event.preventDefault()
+      // Call the parent's onChange with the numeric value
+      if (onChange) {
+        onChange(numericValue)
       }
     }
 
-    const input = inputRef.current
-    if (input) {
-      input.addEventListener('input', handleInput)
-      input.addEventListener('keydown', handleKeyDown)
-    }
+    return (
+      <Input
+        type='number'
+        ref={ref} // Forward the ref to the Input component
+        min='1'
+        value={inputValue} // Controlled value
+        className={twMerge(
+          className,
+          '[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+        )}
+        onChange={handleChange} // Use the custom handleChange
+        {...props} // Spread all additional props onto the Input component
+      />
+    )
+  }
+)
 
-    return () => {
-      if (input) {
-        input.removeEventListener('input', handleInput)
-        input.removeEventListener('keydown', handleKeyDown)
-      }
-    }
-  }, [])
-
-  return (
-    <Input
-      type='number'
-      ref={inputRef}
-      className={twMerge(
-        className,
-        '[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-      )}
-      {...props} // Spread all additional props onto the Input component
-    />
-  )
-})
+// Set a display name for the component (useful for debugging)
+NumberInput.displayName = 'NumberInput'
 
 export default NumberInput
