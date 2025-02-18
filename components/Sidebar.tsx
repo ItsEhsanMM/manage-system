@@ -13,7 +13,7 @@ export default function Sidebar() {
     <>
       {/* Sidebar */}
       <aside
-        className={`fixed z-40 h-dvh w-64 transform bg-[#f9f9f9] p-4 shadow-lg transition-transform duration-300 ease-in-out md:relative ${
+        className={`fixed z-40 h-full w-64 transform bg-[#f9f9f9] p-4 shadow-lg transition-transform duration-300 ease-in-out md:relative ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         } md:translate-x-0`}
       >

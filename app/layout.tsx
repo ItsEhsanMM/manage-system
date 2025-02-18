@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { Vazirmatn } from 'next/font/google'
 import ReactQueryProvider from '@/providers/react-query'
+import Footer from '@/components/shared/Footer'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -18,9 +19,12 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang='fa' dir='rtl' className={vazir.className}>
-      <body>
-        <ReactQueryProvider>{children}</ReactQueryProvider>
+    <html lang='fa' dir='rtl' className={`${vazir.className}`}>
+      <body className='flex h-dvh max-h-dvh flex-col overflow-auto'>
+        <ReactQueryProvider>
+          {children}
+          <Footer />
+        </ReactQueryProvider>
       </body>
     </html>
   )

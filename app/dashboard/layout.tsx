@@ -9,7 +9,7 @@ export default async function Layout({
 }) {
   const user = await auth()
   return (
-    <div className='flex min-h-screen'>
+    <div className='flex h-full'>
       {/* Sidebar */}
       <Sidebar />
 
