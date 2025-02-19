@@ -36,6 +36,7 @@ const Client = () => {
     defaultValues: {
       name: '',
       email: '',
+      phoneNumber: 0,
       salary: 0
     }
   })
@@ -113,6 +114,26 @@ const Client = () => {
                       type='number'
                       className='border-black'
                       min='0'
+                    ></NumberInput>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='phoneNumber'
+              render={({ field }) => (
+                <FormItem className='flex items-center justify-start space-x-5'>
+                  <FormLabel className='flex w-1/2 justify-start text-xl'>
+                    شماره تلفن:
+                  </FormLabel>
+                  <FormControl>
+                    <NumberInput
+                      {...field}
+                      onChange={prev => field.onChange(prev)}
+                      type='number'
+                      maxLength={10}
+                      className='border-black'
                     ></NumberInput>
                   </FormControl>
                 </FormItem>

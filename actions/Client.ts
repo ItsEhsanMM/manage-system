@@ -10,7 +10,7 @@ import { createServerAction } from 'zsa'
 
 export const createClient = createServerAction()
   .input(clientSchema)
-  .handler(async ({ input: { name, salary, email } }) => {
+  .handler(async ({ input: { name, salary, email,phoneNumber } }) => {
     await connectDB()
     const manager = await auth()
     try {
@@ -18,6 +18,7 @@ export const createClient = createServerAction()
         name,
         salary,
         email,
+        phoneNumber,
         managerID: manager?.user?.id
       })
     } catch (error) {
