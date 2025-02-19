@@ -1,9 +1,21 @@
+import { clientStatistic } from '@/actions/Client'
 import StatBox from '@/components/shared/StatBox'
 
-const page = () => {
+const page = async () => {
+  const [statistics] = await clientStatistic()
+  const parsedContent: { id: number; content: string; count: number }[] =
+    JSON.parse(statistics as string)
+
+  console.log(parsedContent)
   return (
-    <div>
-      <StatBox content='کاربران' info={4000} />
+    <div className='flex flex-1 flex-shrink flex-wrap items-start justify-start gap-12 px-5'>
+      {parsedContent.map(content => (
+        <StatBox
+          content={content.content}
+          info={content.count}
+          key={content.id}
+        />
+      ))}
     </div>
   )
 }
