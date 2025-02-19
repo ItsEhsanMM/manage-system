@@ -1,12 +1,15 @@
+import { cn } from '@/lib/utils'
 import { Card, CardContent, CardHeader } from '../ui/card'
 import '@/styles/statbox.css'
 
 interface Props {
   content: string
   info: number
+  percent: number
 }
 
-const StatBox = ({ content, info }: Props) => {
+const StatBox = ({ content, info, percent }: Props) => {
+  console.log(percent)
   return (
     <Card className='card'>
       <CardHeader className='title'>
@@ -15,7 +18,12 @@ const StatBox = ({ content, info }: Props) => {
       <CardContent className='data'>
         <p>{info}</p>
         <div className='range'>
-          <div className={`fill w-full`}></div>
+          <div
+            style={{
+              width: `${percent}%`
+            }}
+            className={cn('fill')}
+          ></div>
         </div>
       </CardContent>
     </Card>

@@ -13,9 +13,7 @@ export default async function Layout({
         <Navbar />
 
         {/* Main Content Area */}
-        <main className='flex-1 overflow-y-auto bg-gray-50 p-4'>
-          {children}
-        </main>
+        <main className='flex-1 bg-gray-50 p-4'>{children}</main>
       </div>
     </div>
   )
