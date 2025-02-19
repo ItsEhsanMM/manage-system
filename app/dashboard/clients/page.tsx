@@ -9,7 +9,11 @@ const page = async () => {
   return (
     <div className='space-y-4'>
       <Client />
-      <DataTable columns={clientColumns} data={JSON.parse(clients as string)} />
+      <DataTable
+        paginable
+        columns={clientColumns}
+        data={JSON.parse(clients as string)}
+      />
     </div>
   )
 }

@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang='fa' dir='rtl' className={`${vazir.className}`}>
       <body className='flex min-h-dvh flex-col'>
         <ReactQueryProvider>
-          {children}
+          <main className='flex-1 bg-[#f9f9f9]'>{children}</main>
           <Footer />
         </ReactQueryProvider>
       </body>
