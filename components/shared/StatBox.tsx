@@ -9,7 +9,6 @@ interface Props {
 }
 
 const StatBox = ({ content, info, percent }: Props) => {
-  console.log(percent)
   return (
     <Card className='card'>
       <CardHeader className='title'>

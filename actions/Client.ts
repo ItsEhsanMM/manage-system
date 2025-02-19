@@ -23,7 +23,7 @@ export const createClient = createServerAction()
     } catch (error) {
       console.error(error)
     }
-    revalidatePath('/dashboard/clients')
+    revalidatePath('/dashboard/clients',"layout")
   })
 
 export const getClients = createServerAction().handler(async () => {

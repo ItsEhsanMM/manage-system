@@ -28,7 +28,7 @@ const page = async () => {
       </div>
       <Separator />
       <div className='flex flex-col space-y-4'>
-        <h2 className='text-2xl font-bold'>آخرین کارمندها</h2>
+        <h2 className='text-2xl font-bold'>آخرین کاربران</h2>
         <DataTable
           columns={clientColumns}
           data={JSON.parse(clients as string).splice(0, 5)}
