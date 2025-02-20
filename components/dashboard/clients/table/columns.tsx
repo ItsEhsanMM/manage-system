@@ -62,7 +62,7 @@ export const clientColumns: ColumnDef<ClientWithId>[] = [
         hour: '2-digit',
         minute: '2-digit',
         hour12: false,
-        numberingSystem: 'latn' // Use Latin numerals (English numbers)
+        numberingSystem: 'latn'
       })
 
       const formattedDate = formatter.format(date).replace(/‎/g, '')

@@ -58,7 +58,7 @@ const AddClientDialog = () => {
       <DialogTrigger asChild>
         <Button>اضافه کردن</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>کاربر جدید</DialogTitle>
         </DialogHeader>

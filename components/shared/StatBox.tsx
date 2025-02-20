@@ -22,7 +22,7 @@ const StatBox = ({ content, info, percent }: Props) => {
                 : 'red'
           }}
         >
-          {percent.toFixed(1)}%
+          {isNaN(percent) ? 0 : percent.toFixed(1)}%
         </p>
       </CardHeader>
       <CardContent className='data'>

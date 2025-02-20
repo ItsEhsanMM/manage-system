@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
-const page = () => {
+const page = async () => {
   return (
     <section className='flex flex-col justify-between rounded-lg bg-white p-6 shadow-md'>
       <h2 className='mb-4 text-xl font-semibold text-gray-800'>
@@ -23,7 +24,9 @@ const page = () => {
       </p>
       <div className='mt-6'>
         <Button className='rounded-lg bg-blue-600 px-6 py-3 text-lg font-medium text-white transition hover:bg-blue-700'>
-          دریافت گزارش به صورت Excel
+          <Link target='_blank' href={'/api/table'}>
+            دریافت گزارش به صورت Excel
+          </Link>
         </Button>
       </div>
     </section>

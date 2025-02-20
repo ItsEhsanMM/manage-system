@@ -9,7 +9,7 @@ interface IReport {
 }
 
 // Define the Client document interface
-interface IClient extends Document {
+export interface IClient extends Document {
   name: string
   email: string
   salary: number
@@ -18,8 +18,6 @@ interface IClient extends Document {
   joinDate: Date
   report: IReport[]
   managerID: mongoose.Types.ObjectId
-  previousSalary?: number // Optional property for tracking previous salary
-  previousStatus?: 'hired' | 'fired' // Optional property for tracking previous status
 }
 
 // Define the schema for the report subdocument
@@ -39,7 +37,7 @@ const ReportSchema = new Schema<IReport>({
   },
   changedAt: {
     type: Date,
-    default: Date.now
+    default: Date.now()
   }
 })
 
@@ -67,37 +65,44 @@ const ClientSchema = new Schema<IClient>({
   },
   joinDate: {
     type: Date,
-    default: Date.now
+    default: Date.now()
   },
-  report: [ReportSchema], // Array of report objects
+  report: {
+    type: [ReportSchema],
+    default: []
+  },
   managerID: {
     type: Schema.Types.ObjectId,
-    ref: 'User', // Reference to the User model (assuming the manager is a User)
+    ref: 'User',
     required: true
   }
 })
 
 // Middleware to log changes in salary or status
-ClientSchema.pre<IClient>('save', function (next) {
+ClientSchema.pre<IClient>('save', function () {
   if (this.isModified('salary')) {
-    this.report.push({
-      changeType: 'salary',
-      previousValue: this.previousSalary || 0,
-      newValue: this.salary,
-      changedAt: new Date() // Add the current date and time
-    })
-    this.previousSalary = this.salary // Update the previousSalary property
+    const previousSalary = this.get('salary') // Get previous salary before changes
+    if (previousSalary !== this.salary) {
+      this.report.push({
+        changeType: 'salary',
+        previousValue: previousSalary,
+        newValue: this.salary,
+        changedAt: new Date()
+      })
+    }
   }
+
   if (this.isModified('status')) {
-    this.report.push({
-      changeType: 'status',
-      previousValue: this.previousStatus || 'hired',
-      newValue: this.status,
-      changedAt: new Date() // Add the current date and time
-    })
-    this.previousStatus = this.status // Update the previousStatus property
+    const previousStatus = this.get('status', null, { getters: false }) // Get previous status
+    if (previousStatus !== this.status) {
+      this.report.push({
+        changeType: 'status',
+        previousValue: previousStatus,
+        newValue: this.status,
+        changedAt: new Date()
+      })
+    }
   }
-  next()
 })
 
 // Check if the model already exists to avoid recompilation

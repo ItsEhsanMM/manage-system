@@ -15,17 +15,17 @@ export const createClient = createServerAction()
     await connectDB()
     const manager = await auth()
     try {
-      Client.create({
+      await Client.create({
         name,
         salary,
         email,
         phoneNumber,
         managerID: manager?.user?.id
       })
+      revalidatePath('/dashboard/clients')
     } catch (error) {
       console.error(error)
     }
-    revalidatePath('/dashboard/clients')
   })
 
 export const getClients = createServerAction().handler(async () => {
