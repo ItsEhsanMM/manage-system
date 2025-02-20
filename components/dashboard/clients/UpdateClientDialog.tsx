@@ -32,7 +32,7 @@ interface Props {
 }
 
 const UpdateClientDialog = ({
-  data: { _id, name, salary, email = '', phoneNumber = 0 }
+  data: { id, name, salary, email = '', phoneNumber = '' }
 }: Props) => {
   const { isClientDialogOpen, toggleClientDialog } = useClientDialogStore()
 
@@ -44,28 +44,31 @@ const UpdateClientDialog = ({
     defaultValues: {
       name,
       email,
-      phoneNumber,
+      phoneNumber: phoneNumber.toString(), // Ensuring string type for Prisma
       salary
     }
   })
 
   useEffect(() => {
-    if (data?.success) {
-      toggleClientDialog() // Close the dialog
-      form.reset() // Reset the form
-      reset() // Reset the mutation state
+    if (isSuccess && data?.success) {
+      toggleClientDialog()
+      form.reset()
+      reset()
     }
-  }, [isSuccess, form, reset])
+  }, [isSuccess, data, form, reset, toggleClientDialog])
 
   function onSubmit(values: z.infer<typeof clientSchema>) {
     mutate({
       ...values,
-      _id
+      id // Ensuring correct ID handling for Prisma
     })
   }
 
   return (
-    <Dialog open={isClientDialogOpen} onOpenChange={() => toggleClientDialog()}>
+    <Dialog
+      open={isClientDialogOpen}
+      onOpenChange={open => toggleClientDialog(open)}
+    >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>ویرایش کاربر</DialogTitle>
@@ -76,17 +79,15 @@ const UpdateClientDialog = ({
               control={form.control}
               name='name'
               render={({ field }) => (
-                <>
-                  <FormItem className='flex items-center space-x-5'>
-                    <FormLabel className='flex w-1/2 justify-start text-xl'>
-                      نام:
-                    </FormLabel>
-                    <FormControl>
-                      <Input className='border-black' {...field}></Input>
-                    </FormControl>
-                  </FormItem>
+                <FormItem className='flex items-center space-x-5'>
+                  <FormLabel className='flex w-1/2 justify-start text-xl'>
+                    نام:
+                  </FormLabel>
+                  <FormControl>
+                    <Input className='border-black' {...field} />
+                  </FormControl>
                   <FormMessage />
-                </>
+                </FormItem>
               )}
             />
 
@@ -94,16 +95,15 @@ const UpdateClientDialog = ({
               control={form.control}
               name='email'
               render={({ field }) => (
-                <>
-                  <FormItem className='flex items-center justify-start space-x-5'>
-                    <FormLabel className='flex w-1/2 justify-start text-xl'>
-                      ایمیل:
-                    </FormLabel>
-                    <FormControl>
-                      <Input className='border-black' {...field}></Input>
-                    </FormControl>
-                  </FormItem>
-                </>
+                <FormItem className='flex items-center justify-start space-x-5'>
+                  <FormLabel className='flex w-1/2 justify-start text-xl'>
+                    ایمیل:
+                  </FormLabel>
+                  <FormControl>
+                    <Input className='border-black' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             />
 
@@ -122,11 +122,13 @@ const UpdateClientDialog = ({
                       type='number'
                       className='border-black'
                       min='0'
-                    ></NumberInput>
+                    />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name='phoneNumber'
@@ -136,17 +138,24 @@ const UpdateClientDialog = ({
                     شماره تلفن:
                   </FormLabel>
                   <FormControl>
-                    <NumberInput
+                    <Input
                       {...field}
-                      onChange={prev => field.onChange(prev)}
-                      type='number'
-                      maxLength={10}
+                      onChange={e => {
+                        const formattedValue = e.target.value.replace(
+                          /[^0-9]/g,
+                          ''
+                        )
+                        field.onChange(formattedValue) // Updating the field with a cleaned value
+                      }}
+                      maxLength={11}
                       className='border-black'
-                    ></NumberInput>
+                    />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
+
             <Button disabled={isPending} type='submit'>
               ثبت
             </Button>
@@ -156,4 +165,5 @@ const UpdateClientDialog = ({
     </Dialog>
   )
 }
+
 export default UpdateClientDialog

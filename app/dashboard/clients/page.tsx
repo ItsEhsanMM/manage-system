@@ -8,7 +8,7 @@ const Page = async () => {
 
   let clients: ClientWithId[] = []
   try {
-    clients = JSON.parse(clientsJson as string) as ClientWithId[]
+    clients = JSON.parse(clientsJson!.toString()) as ClientWithId[]
   } catch (error) {
     console.error('Failed to parse clients:', error)
   }

@@ -1,10 +1,8 @@
 'use server'
 
 import { auth } from '@/auth'
-import connectDB from '@/lib/db'
-import Client from '@/models/Client'
+import { prisma } from '@/lib/prisma'
 import { clientSchema } from '@/Schema/client'
-import mongoose from 'mongoose'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { createServerAction } from 'zsa'
@@ -12,15 +10,16 @@ import { createServerAction } from 'zsa'
 export const createClient = createServerAction()
   .input(clientSchema)
   .handler(async ({ input: { name, salary, email, phoneNumber } }) => {
-    await connectDB()
     const manager = await auth()
     try {
-      await Client.create({
-        name,
-        salary,
-        email,
-        phoneNumber,
-        managerID: manager?.user?.id
+      await prisma.client.create({
+        data: {
+          name,
+          salary,
+          email,
+          phoneNumber: phoneNumber?.toString() || null,
+          managerID: manager?.user?.id || ''
+        }
       })
       revalidatePath('/dashboard/clients')
     } catch (error) {
@@ -29,103 +28,51 @@ export const createClient = createServerAction()
   })
 
 export const getClients = createServerAction().handler(async () => {
-  await connectDB()
   const currentUser = await auth()
-
   try {
-    const clients = await Client.find({
-      managerID: new mongoose.Types.ObjectId(currentUser?.user?.id)
+    const clients = await prisma.client.findMany({
+      where: { managerID: currentUser?.user?.id || '' },
+      orderBy: [{ status: 'asc' }, { joinDate: 'desc' }]
     })
-      .sort({ status: -1, joinDate: -1 })
-      .exec()
-
     return JSON.stringify(clients)
   } catch (error) {
     console.error(error)
-    return []
   }
 })
 
 export const clientStatistic = createServerAction().handler(async () => {
-  await connectDB()
   const currentUser = await auth()
-
   try {
-    const clients = await Client.find({
-      managerID: new mongoose.Types.ObjectId(currentUser?.user?.id)
+    const clients = await prisma.client.findMany({
+      where: { managerID: currentUser?.user?.id || '' },
+      orderBy: [{ status: 'asc' }, { joinDate: 'desc' }]
     })
-      .sort({ status: 1, joinDate: -1 })
-      .exec()
-
     const clientCount = clients.length
-    let hired = 0
-    let fired = 0
-
-    clients.map(client => {
-      if (client.status === 'hired') {
-        hired += 1
-      } else {
-        fired += 1
-      }
-    })
-
+    const hired = clients.filter(client => client.status === 'HIRED').length
+    const fired = clients.filter(client => client.status === 'FIRED').length
     return JSON.stringify([
-      {
-        id: 0,
-        content: 'کل کاربران',
-        count: clientCount
-      },
-      {
-        id: 1,
-        content: 'استخدامی ها',
-        count: hired
-      },
-      {
-        id: 2,
-        content: 'اخراجی ها',
-        count: fired
-      }
+      { id: 0, content: 'کل کاربران', count: clientCount },
+      { id: 1, content: 'استخدامی ها', count: hired },
+      { id: 2, content: 'اخراجی ها', count: fired }
     ])
   } catch (error) {
     console.error(error)
     return [
-      {
-        id: 0,
-        content: 'کل کاربران',
-        count: 0
-      },
-      {
-        id: 1,
-        content: 'استخدامی ها',
-        count: 0
-      },
-      {
-        id: 2,
-        content: 'اخراجی ها',
-        count: 0
-      }
+      { id: 0, content: 'کل کاربران', count: 0 },
+      { id: 1, content: 'استخدامی ها', count: 0 },
+      { id: 2, content: 'اخراجی ها', count: 0 }
     ]
   }
 })
 
 export const updateClient = createServerAction()
-  .input(clientSchema.merge(z.object({ _id: z.string() })))
-  .handler(async ({ input: { _id, name, salary, email, phoneNumber } }) => {
-    await connectDB()
-
+  .input(clientSchema.merge(z.object({ id: z.string() })))
+  .handler(async ({ input: { id, name, salary, email, phoneNumber } }) => {
     try {
-      await Client.updateOne(
-        { _id },
-        {
-          $set: {
-            name,
-            salary,
-            email,
-            phoneNumber
-          }
-        }
-      )
-
+      await prisma.client.update({
+        where: { id },
+        data: { name, salary, email, phoneNumber: phoneNumber?.toString() || null }
+      })
       revalidatePath('/dashboard/clients')
       return { success: true, message: 'Client updated successfully' }
     } catch (error) {
@@ -135,24 +82,14 @@ export const updateClient = createServerAction()
 
 export const changeStatus = createServerAction()
   .input(z.string())
-
   .handler(async ({ input }) => {
-    await connectDB()
     try {
-      const client = await Client.findById(input)
-
-      const newStatus = client!.status === 'hired' ? 'fired' : 'hired'
-      await Client.findByIdAndUpdate(
-        input,
-        {
-          status: newStatus
-        },
-        {
-          new: true
-        }
-      )
-
+      const client = await prisma.client.findUnique({ where: { id: input } })
+      if (!client) return { success: false, message: 'Client not found' }
+      const newStatus = client.status === 'HIRED' ? 'FIRED' : 'HIRED'
+      await prisma.client.update({ where: { id: input }, data: { status: newStatus } })
       revalidatePath('/dashboard/clients')
+      return { success: true }
     } catch (error) {
       return { success: false, message: 'Error updating client', error }
     }

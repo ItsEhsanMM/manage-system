@@ -46,7 +46,7 @@ export const clientColumns: ColumnDef<ClientWithId>[] = [
     header: 'وضعیت',
     size: 150,
     cell: ({ row }) => {
-      return <p>{row.getValue('status') === 'hired' ? 'استخدام' : 'اخراج'}</p>
+      return <p>{row.getValue('status') === 'HIRED' ? 'استخدام' : 'اخراج'}</p>
     }
   },
   {
@@ -86,11 +86,13 @@ export const clientColumns: ColumnDef<ClientWithId>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end'>
-            <DropdownMenuItem onClick={() => toggleClientDialog(clientDetails)}>
+            <DropdownMenuItem
+              onClick={() => toggleClientDialog(true, clientDetails)}
+            >
               ویرایش اطلاعات
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => mutate(clientDetails._id)}>
+            <DropdownMenuItem onClick={() => mutate(clientDetails.id)}>
               تغییر وضعیت
             </DropdownMenuItem>
           </DropdownMenuContent>

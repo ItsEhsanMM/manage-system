@@ -11,7 +11,7 @@ const page = async () => {
   const [clients] = await getClients()
   const [statistics] = await clientStatistic()
   const parsedContent: { id: number; content: string; count: number }[] =
-    JSON.parse(statistics as string)
+    JSON.parse(statistics!.toString())
 
   return (
     <div className='flex flex-col space-y-8'>
@@ -31,7 +31,7 @@ const page = async () => {
         <h2 className='text-2xl font-bold'>آخرین کاربران استخدامی</h2>
         <DataTable
           columns={clientColumns}
-          data={JSON.parse(clients as string).splice(0, 5)}
+          data={JSON.parse(clients!.toString()).splice(0, 5)}
         />
       </div>
     </div>

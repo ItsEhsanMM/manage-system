@@ -2,16 +2,17 @@ import Link from 'next/link'
 
 const Footer = () => {
   return (
-    <section className='flex w-full items-center justify-center space-x-4 border bg-blue-400 p-2 text-sm text-white md:text-lg'>
-      <p>برنامه نویسی شده توسط احسان محمدی</p>
+    <footer className='flex w-full flex-col items-center justify-center gap-2 border-t bg-gradient-to-r from-blue-500 to-blue-700 p-4 text-center text-sm text-white md:flex-row md:gap-4 md:text-lg'>
+      <p className='font-medium'>برنامه نویسی شده توسط احسان محمدی</p>
       <Link
-        className='h-full underline'
-        href={'https://next-flash.ir'}
+        className='transition-opacity hover:opacity-80'
+        href='https://next-flash.ir'
         target='_blank'
       >
-        next-flash.ir
+        <span className='underline'>next-flash.ir</span>
       </Link>
-    </section>
+    </footer>
   )
 }
+
 export default Footer

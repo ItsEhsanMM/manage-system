@@ -36,7 +36,7 @@ const AddClientDialog = () => {
     defaultValues: {
       name: '',
       email: '',
-      phoneNumber: 0,
+      phoneNumber: '',
       salary: 0
     }
   })
@@ -128,13 +128,18 @@ const AddClientDialog = () => {
                     شماره تلفن:
                   </FormLabel>
                   <FormControl>
-                    <NumberInput
+                    <Input
                       {...field}
-                      onChange={prev => field.onChange(prev)}
-                      type='number'
-                      maxLength={10}
+                      onChange={e => {
+                        const formattedValue = e.target.value.replace(
+                          /[^0-9]/g,
+                          ''
+                        )
+                        field.onChange(formattedValue) // Updating the field with a cleaned value
+                      }}
+                      maxLength={11}
                       className='border-black'
-                    ></NumberInput>
+                    />
                   </FormControl>
                 </FormItem>
               )}

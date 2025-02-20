@@ -1,7 +1,6 @@
 'use server'
 
-import connectDB from '@/lib/db'
-import { User } from '@/models/User'
+import { prisma } from '@/lib/prisma'
 import { loginSchema, registerSchema } from '@/Schema/user'
 import { createServerAction } from 'zsa'
 import { hash, compare } from 'bcryptjs'
@@ -12,72 +11,61 @@ import { SignIn } from './signIn'
 export const getUserByEmail = createServerAction()
   .input(z.string().email())
   .handler(async ({ input }) => {
-    await connectDB()
     try {
-      const user = await User.findOne({
-        email: input
+      const user = await prisma.user.findUnique({
+        where: { email: input }
       })
 
       return user as z.infer<typeof loginSchema> | null
     } catch (error) {
-      console.log(error)
-      process.exit(1)
+      console.error(error)
+      return null
     }
   })
 
 export const login = createServerAction()
   .input(loginSchema)
   .handler(async ({ input: { email, password } }) => {
-    await connectDB()
     try {
-      const [user, error] = await getUserByEmail(email);
-
-      if (error) {
-        console.error(error);
-        return new Error('خطا در دریافت اطلاعات کاربر');
-      }
+      const user = await prisma.user.findUnique({
+        where: { email }
+      })
 
       if (!user) return new Error('این ایمیل وجود ندارد')
 
       const passwordMatch = await compare(password, user.password)
-
       if (!passwordMatch) return new Error('رمز عبور اشتباه است!')
 
-      await SignIn('credentials', {
-        email,
-        password
-      })
-    } catch (error) {
-      console.log(error)
-      process.exit(1)
-    }
+      await SignIn('credentials', { email, password })
 
+    } catch (error) {
+      console.error(error)
+      return new Error('خطا در ورود')
+    }
     redirect("/dashboard")
   })
 
 export const register = createServerAction()
   .input(registerSchema)
   .handler(async ({ input: { name, email, password } }) => {
-    await connectDB()
-
     try {
-      const user = await User.findOne({
-        email: email
+      const existingUser = await prisma.user.findUnique({
+        where: { email }
       })
 
-      if (user) {
-        return new Error('این ایمیل وجود دارد')
-      }
+      if (existingUser) return new Error('این ایمیل وجود دارد')
 
-      User.create({
-        name,
-        email,
-        password: await hash(password, 12)
+      await prisma.user.create({
+        data: {
+          name,
+          email,
+          password: await hash(password, 12)
+        }
       })
-      
+
     } catch (error) {
-      console.log(error)
-      process.exit(1)
+      console.error(error)
+      return new Error('خطا در ثبت نام')
     }
     redirect('/auth/login')
   })

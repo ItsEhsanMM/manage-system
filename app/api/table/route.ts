@@ -1,14 +1,28 @@
 import { getClients } from '@/actions/Client'
-import { IClient } from '@/models/Client'
 import * as XLSX from 'xlsx'
-import { z } from 'zod'
 
 export async function GET() {
   try {
     const [data] = await getClients()
 
-    const formattedData = JSON.parse(data as string).map((data: IClient) => {
-      const date = new Date(data.joinDate)
+    interface ClientData {
+      name: string;
+      email: string;
+      phoneNumber: string;
+      joinDate: string;
+      status: string;
+    }
+
+    interface FormattedData {
+      'نام و نام خانوادگی': string;
+      'آدرس ایمیل': string;
+      'شماره تماس': string;
+      'تاریخ عضویت': string;
+      'وضعیت حساب کاربری': string;
+    }
+
+    const formattedData: FormattedData[] = JSON.parse(data!.toString()).map((data: ClientData) => {
+      const date = new Date(data.joinDate);
       const formatter = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
         year: 'numeric',
         month: '2-digit',
@@ -17,16 +31,16 @@ export async function GET() {
         minute: '2-digit',
         hour12: false,
         numberingSystem: 'latn'
-      })
+      });
 
       return {
         'نام و نام خانوادگی': data.name,
         'آدرس ایمیل': data.email,
         'شماره تماس': data.phoneNumber,
         'تاریخ عضویت': formatter.format(date).replace(/‎/g, ''),
-        'وضعیت حساب کاربری': data.status === "hired" ? "استخدام شده" : "اخراج شده"
-      }
-    })
+        'وضعیت حساب کاربری': data.status === "HIRED" ? "استخدام شده" : "اخراج شده"
+      };
+    });
 
     const wb = XLSX.utils.book_new()
     const ws = XLSX.utils.json_to_sheet(formattedData)
