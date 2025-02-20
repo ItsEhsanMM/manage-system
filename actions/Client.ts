@@ -111,7 +111,7 @@ export const clientStatistic = createServerAction().handler(async () => {
 export const updateClient = createServerAction()
   .input(clientSchema.merge(z.object({ _id: z.string() })))
   .handler(async ({ input: { _id, name, salary, email, phoneNumber } }) => {
-    await connectDB();
+    await connectDB()
 
     try {
       await Client.updateOne(
@@ -121,14 +121,42 @@ export const updateClient = createServerAction()
             name,
             salary,
             email,
-            phoneNumber,
-          },
+            phoneNumber
+          }
         }
-      );
+      )
 
-      revalidatePath("/dashboard/clients","layout")
-      return { success: true, message: "Client updated successfully" };
+      revalidatePath('/dashboard/clients', 'layout')
+      return { success: true, message: 'Client updated successfully' }
     } catch (error) {
-      return { success: false, message: "Error updating client", error };
+      return { success: false, message: 'Error updating client', error }
     }
-  });
+  })
+
+export const changeStatus = createServerAction()
+  .input(
+    z.object({
+      _id: z.string()
+    })
+  )
+  .handler(async ({ input: { _id } }) => {
+    await connectDB()
+    try {
+      const client = await Client.findById(_id)
+
+      const newStatus = client!.status === 'hired' ? 'fired' : 'hired'
+      await Client.findByIdAndUpdate(
+        _id,
+        {
+          status: newStatus
+        },
+        {
+          new: true
+        }
+      )
+
+      revalidatePath('/dashboard/clients', 'layout')
+    } catch (error) {
+      return { success: false, message: 'Error updating client', error }
+    }
+  })
