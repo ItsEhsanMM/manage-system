@@ -1,16 +1,22 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
-import { date } from 'zod'
-export type Client = {
-  name: string
-  email: string
-  salary: number
-  status: 'hired' | 'fired'
-  joinDate: Date
-}
+import { MoreHorizontal } from 'lucide-react'
 
-export const clientColumns: ColumnDef<Client>[] = [
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import { useClientDialogStore } from '@/stores/clientDialogStore'
+import UpdateClientDialog from '../UpdateClientDialog'
+import { Client, ClientWithId } from '@/shared/types'
+
+export const clientColumns: ColumnDef<ClientWithId>[] = [
   {
     accessorKey: 'name',
     header: 'نام',
@@ -20,6 +26,11 @@ export const clientColumns: ColumnDef<Client>[] = [
     accessorKey: 'email',
     header: 'ایمیل',
     size: 250
+  },
+  {
+    accessorKey: 'phoneNumber',
+    header: 'شماره تلفن',
+    size: 150
   },
   {
     accessorKey: 'salary',
@@ -56,6 +67,32 @@ export const clientColumns: ColumnDef<Client>[] = [
 
       const formattedDate = formatter.format(date).replace(/‎/g, '')
       return <div className='font-medium'>{formattedDate}</div>
+    }
+  },
+  {
+    id: 'actions',
+    size: 50,
+    cell: ({ row }) => {
+      const { toggleClientDialog } = useClientDialogStore()
+      const clientDetails = row.original
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant='ghost' className='h-8 w-8 p-0'>
+              <span className='sr-only'>Open menu</span>
+              <MoreHorizontal className='h-4 w-4' />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align='end'>
+            <DropdownMenuItem onClick={() => toggleClientDialog(clientDetails)}>
+              ویرایش اطلاعات
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>تغییر وضعیت</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
     }
   }
 ]

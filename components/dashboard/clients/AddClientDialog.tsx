@@ -26,7 +26,7 @@ import {
 import NumberInput from '@/components/ui/NumberInput'
 import { Input } from '@/components/ui/input'
 
-const Client = () => {
+const AddClientDialog = () => {
   const { mutate, isPending, isSuccess, reset } =
     useServerActionMutation(createClient)
 
@@ -148,4 +148,4 @@ const Client = () => {
     </Dialog>
   )
 }
-export default Client
+export default AddClientDialog

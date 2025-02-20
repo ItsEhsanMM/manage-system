@@ -6,11 +6,12 @@ import Client from '@/models/Client'
 import { clientSchema } from '@/Schema/client'
 import mongoose from 'mongoose'
 import { revalidatePath } from 'next/cache'
+import { z } from 'zod'
 import { createServerAction } from 'zsa'
 
 export const createClient = createServerAction()
   .input(clientSchema)
-  .handler(async ({ input: { name, salary, email,phoneNumber } }) => {
+  .handler(async ({ input: { name, salary, email, phoneNumber } }) => {
     await connectDB()
     const manager = await auth()
     try {
@@ -24,7 +25,7 @@ export const createClient = createServerAction()
     } catch (error) {
       console.error(error)
     }
-    revalidatePath('/dashboard/clients',"layout")
+    revalidatePath('/dashboard/clients', 'layout')
   })
 
 export const getClients = createServerAction().handler(async () => {
@@ -106,3 +107,28 @@ export const clientStatistic = createServerAction().handler(async () => {
     ]
   }
 })
+
+export const updateClient = createServerAction()
+  .input(clientSchema.merge(z.object({ _id: z.string() })))
+  .handler(async ({ input: { _id, name, salary, email, phoneNumber } }) => {
+    await connectDB();
+
+    try {
+      await Client.updateOne(
+        { _id },
+        {
+          $set: {
+            name,
+            salary,
+            email,
+            phoneNumber,
+          },
+        }
+      );
+
+      revalidatePath("/dashboard/clients","layout")
+      return { success: true, message: "Client updated successfully" };
+    } catch (error) {
+      return { success: false, message: "Error updating client", error };
+    }
+  });

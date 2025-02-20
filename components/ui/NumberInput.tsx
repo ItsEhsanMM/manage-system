@@ -40,7 +40,6 @@ const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
       <Input
         type='number'
         ref={ref} // Forward the ref to the Input component
-        min='1'
         value={inputValue} // Controlled value
         className={twMerge(
           className,
