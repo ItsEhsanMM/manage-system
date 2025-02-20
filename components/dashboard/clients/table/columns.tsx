@@ -13,6 +13,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useClientDialogStore } from '@/stores/clientDialogStore'
 import { ClientWithId } from '@/shared/types'
+import { useServerActionMutation } from '@/lib/hooks/server-action-hooks'
+import { changeStatus } from '@/actions/Client'
 
 export const clientColumns: ColumnDef<ClientWithId>[] = [
   {
@@ -71,6 +73,7 @@ export const clientColumns: ColumnDef<ClientWithId>[] = [
     id: 'actions',
     size: 50,
     cell: ({ row }) => {
+      const { mutate } = useServerActionMutation(changeStatus)
       const { toggleClientDialog } = useClientDialogStore()
       const clientDetails = row.original
 
@@ -87,7 +90,9 @@ export const clientColumns: ColumnDef<ClientWithId>[] = [
               ویرایش اطلاعات
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>تغییر وضعیت</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => mutate(clientDetails._id)}>
+              تغییر وضعیت
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )

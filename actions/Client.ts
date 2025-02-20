@@ -134,19 +134,16 @@ export const updateClient = createServerAction()
   })
 
 export const changeStatus = createServerAction()
-  .input(
-    z.object({
-      _id: z.string()
-    })
-  )
-  .handler(async ({ input: { _id } }) => {
+  .input(z.string())
+
+  .handler(async ({ input }) => {
     await connectDB()
     try {
-      const client = await Client.findById(_id)
+      const client = await Client.findById(input)
 
       const newStatus = client!.status === 'hired' ? 'fired' : 'hired'
       await Client.findByIdAndUpdate(
-        _id,
+        input,
         {
           status: newStatus
         },
