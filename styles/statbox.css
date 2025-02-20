@@ -20,7 +20,7 @@
   
   .percent {
     margin-left: 0.5rem;
-    color: #02972f;
+    /* color: #02972f; */
     font-weight: 600;
     display: flex;
   }

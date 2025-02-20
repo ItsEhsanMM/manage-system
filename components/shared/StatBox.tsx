@@ -13,6 +13,17 @@ const StatBox = ({ content, info, percent }: Props) => {
     <Card className='card'>
       <CardHeader className='title'>
         <p className='title-text text-2xl'>{content}</p>
+        <p
+          className='percent'
+          style={{
+            color:
+              content === 'استخدامی ها' || content === 'کل کاربران'
+                ? '#02972f'
+                : 'red'
+          }}
+        >
+          {percent.toFixed(1)}%
+        </p>
       </CardHeader>
       <CardContent className='data'>
         <p>{info}</p>

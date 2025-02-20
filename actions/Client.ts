@@ -25,7 +25,7 @@ export const createClient = createServerAction()
     } catch (error) {
       console.error(error)
     }
-    revalidatePath('/dashboard/clients', 'layout')
+    revalidatePath('/dashboard/clients')
   })
 
 export const getClients = createServerAction().handler(async () => {
@@ -36,7 +36,7 @@ export const getClients = createServerAction().handler(async () => {
     const clients = await Client.find({
       managerID: new mongoose.Types.ObjectId(currentUser?.user?.id)
     })
-      .sort({ status: 1, joinDate: -1 })
+      .sort({ status: -1, joinDate: -1 })
       .exec()
 
     return JSON.stringify(clients)
@@ -126,7 +126,7 @@ export const updateClient = createServerAction()
         }
       )
 
-      revalidatePath('/dashboard/clients', 'layout')
+      revalidatePath('/dashboard/clients')
       return { success: true, message: 'Client updated successfully' }
     } catch (error) {
       return { success: false, message: 'Error updating client', error }
@@ -152,7 +152,7 @@ export const changeStatus = createServerAction()
         }
       )
 
-      revalidatePath('/dashboard/clients', 'layout')
+      revalidatePath('/dashboard/clients')
     } catch (error) {
       return { success: false, message: 'Error updating client', error }
     }
