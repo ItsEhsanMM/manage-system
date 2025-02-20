@@ -1,6 +1,6 @@
 'use client'
 
-import { Client, ClientWithId } from '@/shared/types'
+import { ClientWithId } from '@/shared/types'
 import { DataTable } from './table/data-table'
 import { clientColumns } from './table/columns'
 import UpdateClientDialog from './UpdateClientDialog'

@@ -11,7 +11,6 @@ import {
   CardTitle
 } from '../ui/card'
 import { Input } from '../ui/input'
-import { Label } from '../ui/label'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { registerSchema } from '@/Schema/user'

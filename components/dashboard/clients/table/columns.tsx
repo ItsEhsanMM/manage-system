@@ -8,13 +8,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { useClientDialogStore } from '@/stores/clientDialogStore'
-import UpdateClientDialog from '../UpdateClientDialog'
-import { Client, ClientWithId } from '@/shared/types'
+import { ClientWithId } from '@/shared/types'
 
 export const clientColumns: ColumnDef<ClientWithId>[] = [
   {
