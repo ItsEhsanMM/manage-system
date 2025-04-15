@@ -12,7 +12,6 @@ interface Props {
 
 const ClientTableParent = ({ data }: Props) => {
   const { isClientDialogOpen, selectedClient } = useClientDialogStore()
-  console.log(data)
 
   return (
     <div>
